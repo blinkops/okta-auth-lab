@@ -37,28 +37,32 @@ export default {
       });
     }
 
-    // The real OpenAuth server code starts here:
-    return issuer({
-      storage: CloudflareStorage({
-        namespace: env.AUTH_STORAGE,
-      }),
-      subjects,
-      providers: {
-        password: PasswordProvider(
-          PasswordUI({
-            // eslint-disable-next-line @typescript-eslint/require-await
-            sendCode: async (email, code) => {
-              // This is where you would email the verification code to the
-              // user, e.g. using Resend:
-              // https://resend.com/docs/send-with-cloudflare-workers
-              console.log(Sending code ${code} to ${email});
-            },
-            copy: {
-              input_code: "Code (check Worker logs)",
-            },
-          }),
-        ),
-      },
+// The real OpenAuth server code starts here:
+return issuer({
+  storage: CloudflareStorage({
+    namespace: env.AUTH_STORAGE,
+  }),
+  subjects,
+  providers: {
+    password: PasswordProvider(
+      PasswordUI({
+        // eslint-disable-next-line @typescript-eslint/require-await
+        sendCode: async (email, code) => {
+          // This is where you would email the verification code to the
+          // user, e.g. using Resend:
+          // https://resend.com/docs/send-with-cloudflare-workers
+          console.log(`Sending code ${code} to ${email}`);
+        },
+        copy: {
+          input_code: "Code (check Worker logs)",
+        },
+      })
+    ),
+    oauth2: OidcProvider({
+      clientId: "0oanvl3l21qj8Q7uI5d7",
+      issuer: "https://dev-87536712.okta.com/oauth2/default",
+    }),
+  },
       theme: {
         title: "myAuth",
         primary: "#0051c3",
@@ -95,16 +99,3 @@ async function getOrCreateUser(env: Env, email: string): Promise<string> {
   console.log(Found or created user ${result.id} with email ${email});
   return result.id;
 }
-
-
-i need to use this 
-import { OidcProvider } from "@openauthjs/openauth/provider/oidc"
-
-export default issuer({
-  providers: {
-    oauth2: OidcProvider({
-      clientId: "0oanvl3l21qj8Q7uI5d7",
-      issuer: "dev-87536712.okta.com/oauth2/default"
-    })
-  }
-})
