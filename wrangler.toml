@@ -1,0 +1,13 @@
+name = "okta-auth-lab"
+type = "javascript"
+account_id = "your-cloudflare-account-id"
+workers_dev = true
+route = ""  # Leave this empty unless you have a specific domain
+zone_id = ""  # Leave empty unless you are routing through a Cloudflare domain
+
+[vars]
+AUTH_PROVIDER = "oidc"  # Use OpenID Connect (OIDC) for OKTA
+OIDC_ISSUER = "https://dev-87536712.okta.com/oauth2/default"
+OIDC_CLIENT_ID = "0oanv7rr16k24yoOW5d7"
+OIDC_REDIRECT_URI = "https://okta-auth-lab.raz-8d6.workers.dev/callback"
+OIDC_SCOPES = "openid profile email"
