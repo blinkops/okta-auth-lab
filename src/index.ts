@@ -50,7 +50,7 @@ export default {
         ),
         oauth2: OidcProvider({
           clientId: "0oanvl3l21qj8Q7uI5d7",
-          issuer: "https://dev-87536712.okta.com",
+          issuer: "https://dev-87536712.okta.com/oauth2/default",
         }),
       },
       theme: {
