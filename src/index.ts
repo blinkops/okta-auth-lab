@@ -17,14 +17,22 @@ export default {
   fetch(request: Request, env: Env, ctx: ExecutionContext) {
     const url = new URL(request.url);
 
-    // Demo purposes: redirect to OAuth authorization
+    // Debug: Log URL Params to Identify Issues
+    console.log("Incoming request:", request.url);
+
+    // OAuth Authorization Redirect
     if (url.pathname === "/") {
-      url.searchParams.set("redirect_uri", url.origin + "/callback");
-      url.searchParams.set("client_id", "your-client-id");
-      url.searchParams.set("response_type", "code");
+      url.searchParams.set("client_id", "0oanvl3l21qj8Q7uI5d7"); // Correct Client ID
+      url.searchParams.set("redirect_uri", "https://okta-auth-lab.raz-8d6.workers.dev/oauth2/callback");
+      url.searchParams.set("response_type", "code"); // Correct OAuth2 Flow
+      url.searchParams.set("scope", "openid profile email");
       url.pathname = "/authorize";
+
+      console.log("Redirecting to:", url.toString());
       return Response.redirect(url.toString());
-    } else if (url.pathname === "/callback") {
+    } 
+    else if (url.pathname === "/callback") {
+      console.log("OAuth callback received:", url.searchParams.toString());
       return Response.json({
         message: "OAuth flow complete!",
         params: Object.fromEntries(url.searchParams.entries()),
@@ -49,8 +57,11 @@ export default {
           }),
         ),
         oauth2: OidcProvider({
-          clientId: "0oanvl3l21qj8Q7uI5d7",
-          issuer: "https://dev-87536712.okta.com/oauth2/default",
+          clientId: "0oanvl3l21qj8Q7uI5d7", // Fixed Client ID
+          issuer: "https://dev-87536712.okta.com/oauth2/default", // Ensure this matches Okta settings
+          redirectUri: "https://okta-auth-lab.raz-8d6.workers.dev/oauth2/callback",
+          responseType: "code", // Ensure correct response type
+          scopes: ["openid", "profile", "email"], // Standard OIDC scopes
         }),
       },
       theme: {
